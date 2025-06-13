@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cocktail Recipe Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cocktails-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .cocktail-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cocktail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .ingredients-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ingredients-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .ingredients-list li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions-section {
+            margin-bottom: 20px;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            background: #f8f9fa;
+            margin: 5px 0;
+            border-radius: 8px;
+            padding: 10px 15px 10px 35px;
+        }
+
+        .instructions-list li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .instructions-section {
+            counter-reset: step-counter;
+        }
+
+        .allergens-section {
+            margin-bottom: 20px;
+        }
+
+        .allergen-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .allergen-tag {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .share-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: white;
+        }
+
+        .share-whatsapp {
+            background: #25d366;
+        }
+
+        .share-email {
+            background: #ea4335;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .add-card-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .add-card-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Print styles for PDF export */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .controls,
+            .btn,
+            .share-buttons,
+            .add-card-form {
+                display: none !important;
+            }
+            
+            .cocktail-card {
+                break-inside: avoid;
+                margin-bottom: 20px;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .cocktails-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .header {
+                color: black !important;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cocktails-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍸 Professional Cocktail Recipe Cards</h1>
+            <p>Premium cocktail specifications for bar staff</p>
+        </div>
+
+        <div class="controls">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search cocktails by name, ingredient, or allergen...">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="no-allergens">No Allergens</button>
+                    <button class="filter-btn" data-filter="with-allergens">With Allergens</button>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="addCardBtn">
+                    ➕ Add Custom Card
+                </button>
+                <button class="btn btn-secondary" id="exportPdfBtn">
+                    📄 Export to PDF
+                </button>
+                <button class="btn btn-secondary" id="shareAllBtn">
+                    📤 Share All Recipes
+                </button>
+            </div>
+        </div>
+
+        <div class="add-card-form" id="addCardForm">
+            <h3 style="margin-bottom: 20px; color: #333;">Add Custom Cocktail</h3>
+            <form id="customCocktailForm">
+                <div class="form-group">
+                    <label class="form-label" for="cocktailName">Cocktail Name</label>
+                    <input type="text" class="form-input" id="cocktailName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="cocktailIngredients">Ingredients (one per line)</label>
+                    <textarea class="form-textarea" id="cocktailIngredients" placeholder="e.g.&#10;50ml Vodka&#10;25ml Lime juice&#10;15ml Simple syrup" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="cocktailInstructions">Instructions (one per line)</label>
+                    <textarea class="form-textarea" id="cocktailInstructions" placeholder="e.g.&#10;Shake with ice&#10;Double strain into coupe&#10;Garnish with lime wheel" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="cocktailAllergens">Allergens (comma separated)</label>
+                    <input type="text" class="form-input" id="cocktailAllergens" placeholder="e.g. NUTS, SULPHITES, EGGS">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Cocktail</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="cocktails-grid" id="cocktailsGrid">
+            <!-- Cocktail cards will be dynamically inserted here -->
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>No cocktails found</h3>
+            <p>Try adjusting your search or filter criteria</p>
+        </div>
+    </div>
+
+    <script>
+        // Cocktail data will be loaded here
+        let cocktailsData = [];
+        
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const cocktailsGrid = document.getElementById('cocktailsGrid');
+        const noResults = document.getElementById('noResults');
+        const addCardBtn = document.getElementById('addCardBtn');
+        const addCardForm = document.getElementById('addCardForm');
+        const cancelAddBtn = document.getElementById('cancelAddBtn');
+        const customCocktailForm = document.getElementById('customCocktailForm');
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const shareAllBtn = document.getElementById('shareAllBtn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // Initialize the application
+        function init() {
+            loadCocktailData();
+            setupEventListeners();
+            renderCocktails(cocktailsData);
+        }
+
+        // Load cocktail data from extracted Excel data
+        function loadCocktailData() {
+            cocktailsData = [
+  {
+    "name": "ESPRESSO MARTINI",
+    "ingredients": [
+      "50ml Absolut Elyx vodka",
+      "20ml Mr Black coffee liqueur",
+      "1 shot fresh espresso",
+      "10ml Monin praline syrup"
+    ],
+    "instructions": [
+      "Shake very hard with ice",
+      "Double strain into chilled coupe glass",
+      "Garnish with 3 coffee beans"
+    ],
+    "allergens": [
+      "TREE NUTS"
+    ],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Espresso+Martini"
+  },
+  {
+    "name": "SPICY WATERMELON MARGARITA",
+    "ingredients": [
+      "50ml Olmeca Altos Plata Tequila",
+      "25ml El Hispano jalapeno liqueur",
+      "20ml Monin watermelon syrup",
+      "25ml Fresh lime juice",
+      "2 dashes Stiilabunt DOC Fire bitters"
+    ],
+    "instructions": [
+      "Shake very hard with ice",
+      "Double strain into glass",
+      "Garnish with chilli salt rim and dehydrated lime wheel"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Spicy+Margarita"
+  },
+  {
+    "name": "CLASSIC NEGRONI",
+    "ingredients": [
+      "30ml Gin",
+      "30ml Campari",
+      "30ml Sweet vermouth"
+    ],
+    "instructions": [
+      "Build in glass over ice",
+      "Stir gently",
+      "Garnish with orange peel"
+    ],
+    "allergens": [
+      "SULPHITES"
+    ],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Negroni"
+  },
+  {
+    "name": "WHISKEY SOUR",
+    "ingredients": [
+      "60ml Bourbon whiskey",
+      "25ml Fresh lemon juice",
+      "20ml Simple syrup",
+      "1 Egg white"
+    ],
+    "instructions": [
+      "Dry shake without ice",
+      "Shake again with ice",
+      "Double strain into coupe",
+      "Garnish with lemon wheel and cherry"
+    ],
+    "allergens": [
+      "EGGS"
+    ],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Whiskey+Sour"
+  },
+  {
+    "name": "MOSCOW MULE",
+    "ingredients": [
+      "50ml Vodka",
+      "15ml Fresh lime juice",
+      "120ml Ginger beer"
+    ],
+    "instructions": [
+      "Build in copper mug over ice",
+      "Stir gently",
+      "Garnish with lime wheel and mint sprig"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Moscow+Mule"
+  },
+  {
+    "name": "Campari",
+    "ingredients": [
+      "Carpano Classico"
+    ],
+    "instructions": [
+      "garnish"
+    ],
+    "allergens": [
+      "SULPHITES"
+    ],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=Campari"
+  },
+  {
+    "name": "coffee beans (from the hopper)",
+    "ingredients": [
+      "GINO'S MARTINI"
+    ],
+    "instructions": [
+      "Preparation method not specified"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=coffee+beans+(from+the+hopper)"
+  },
+  {
+    "name": "APEROL SPRITZ",
+    "ingredients": [
+      "Aperol",
+      "Prosecco"
+    ],
+    "instructions": [
+      "Build & stir briefly to combine ingredients"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=APEROL+SPRITZ"
+  },
+  {
+    "name": "AMARETTO SOUR",
+    "ingredients": [
+      "Lazzaroni Amaretto",
+      "Lemon juice (Village 1ltr)",
+      "Monin gomme"
+    ],
+    "instructions": [
+      "Dry shake, re-shake & single strain"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=AMARETTO+SOUR"
+  },
+  {
+    "name": "MARGARITA A LA SORRENTO",
+    "ingredients": [
+      "Olmeca Los Altos Blanco Tequila",
+      "Bepi Tosolini Limoncello",
+      "Lime juice (Village press)"
+    ],
+    "instructions": [
+      "Shake & double strain"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=MARGARITA+A+LA+SORRENTO"
+  },
+  {
+    "name": "GINO & THE GIANT PEACH",
+    "ingredients": [
+      "Chamberyzette aperitif",
+      "Aelred Nectarine"
+    ],
+    "instructions": [
+      "Build & stir briefly to combine ingredients & garnishes"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=GINO+&+THE+GIANT+PEACH"
+  },
+  {
+    "name": "SPICY MARGARITA",
+    "ingredients": [
+      "insert ingredient here"
+    ],
+    "instructions": [
+      "Muddle jalapeno - shake extensively & very hard & double strain"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=SPICY+MARGARITA"
+  },
+  {
+    "name": "ALL THE JINGLE LADIES",
+    "ingredients": [
+      "Absolut Vanilla",
+      "Crème de Mure",
+      "WF blackberry syrup"
+    ],
+    "instructions": [
+      "Shake & double strain"
+    ],
+    "allergens": [],
+    "image": "https://via.placeholder.com/300x200/4a90e2/ffffff?text=ALL+THE+JINGLE+LADIES"
+  }
+];
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            searchInput.addEventListener('input', handleSearch);
+            addCardBtn.addEventListener('click', showAddCardForm);
+            cancelAddBtn.addEventListener('click', hideAddCardForm);
+            customCocktailForm.addEventListener('submit', handleAddCocktail);
+            exportPdfBtn.addEventListener('click', handleExportPdf);
+            shareAllBtn.addEventListener('click', handleShareAll);
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', handleFilter);
+            });
+        }
+
+        // Handle search functionality
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredCocktails = cocktailsData.filter(cocktail => {
+                return cocktail.name.toLowerCase().includes(searchTerm) ||
+                       cocktail.ingredients.some(ingredient => ingredient.toLowerCase().includes(searchTerm)) ||
+                       cocktail.allergens.some(allergen => allergen.toLowerCase().includes(searchTerm));
+            });
+            renderCocktails(filteredCocktails);
+        }
+
+        // Handle filter functionality
+        function handleFilter(e) {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            const filter = e.target.dataset.filter;
+            let filteredCocktails = cocktailsData;
+            
+            if (filter === 'no-allergens') {
+                filteredCocktails = cocktailsData.filter(cocktail => cocktail.allergens.length === 0);
+            } else if (filter === 'with-allergens') {
+                filteredCocktails = cocktailsData.filter(cocktail => cocktail.allergens.length > 0);
+            }
+            
+            renderCocktails(filteredCocktails);
+        }
+
+        // Render cocktails
+        function renderCocktails(cocktails) {
+            if (cocktails.length === 0) {
+                cocktailsGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            cocktailsGrid.style.display = 'grid';
+            noResults.style.display = 'none';
+            
+            cocktailsGrid.innerHTML = cocktails.map(cocktail => createCocktailCard(cocktail)).join('');
+        }
+
+        // Create cocktail card HTML
+        function createCocktailCard(cocktail) {
+            const allergensHtml = cocktail.allergens.length > 0 
+                ? `<div class="allergens-section">
+                     <div class="section-title">⚠️ Allergens</div>
+                     <div class="allergen-tags">
+                       ${cocktail.allergens.map(allergen => `<span class="allergen-tag">${allergen}</span>`).join('')}
+                     </div>
+                   </div>`
+                : '';
+
+            return `
+                <div class="cocktail-card">
+                    <div class="card-image">
+                        🍸 ${cocktail.name}
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${cocktail.name}</h3>
+                        
+                        <div class="ingredients-section">
+                            <div class="section-title">🥃 Ingredients</div>
+                            <ul class="ingredients-list">
+                                ${cocktail.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="instructions-section">
+                            <div class="section-title">📋 Instructions</div>
+                            <ol class="instructions-list">
+                                ${cocktail.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+                            </ol>
+                        </div>
+                        
+                        ${allergensHtml}
+                        
+                        <div class="card-actions">
+                            <div class="share-buttons">
+                                <button class="share-btn share-whatsapp" onclick="shareToWhatsApp('${cocktail.name.replace(/'/g, "\\'")}')">
+                                    📱
+                                </button>
+                                <button class="share-btn share-email" onclick="shareToEmail('${cocktail.name.replace(/'/g, "\\'")}')">
+                                    ✉️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show add card form
+        function showAddCardForm() {
+            addCardForm.classList.add('active');
+            addCardForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hide add card form
+        function hideAddCardForm() {
+            addCardForm.classList.remove('active');
+            customCocktailForm.reset();
+        }
+
+        // Handle add cocktail
+        function handleAddCocktail(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('cocktailName').value;
+            const ingredients = document.getElementById('cocktailIngredients').value.split('\n').filter(item => item.trim());
+            const instructions = document.getElementById('cocktailInstructions').value.split('\n').filter(item => item.trim());
+            const allergens = document.getElementById('cocktailAllergens').value.split(',').map(item => item.trim()).filter(item => item);
+            
+            const newCocktail = {
+                name,
+                ingredients,
+                instructions,
+                allergens,
+                image: `https://via.placeholder.com/300x200/4a90e2/ffffff?text=${encodeURIComponent(name)}`
+            };
+            
+            cocktailsData.unshift(newCocktail);
+            renderCocktails(cocktailsData);
+            hideAddCardForm();
+            
+            // Show success message
+            alert('Cocktail added successfully!');
+        }
+
+        // Handle PDF export
+        function handleExportPdf() {
+            window.print();
+        }
+
+        // Handle share all
+        function handleShareAll() {
+            const cocktailNames = cocktailsData.map(cocktail => cocktail.name).join(', ');
+            const shareText = `Check out these amazing cocktail recipes: ${cocktailNames}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Cocktail Recipe Cards',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to copying to clipboard
+                navigator.clipboard.writeText(shareText + ' - ' + window.location.href);
+                alert('Recipe list copied to clipboard!');
+            }
+        }
+
+        // Share to WhatsApp
+        function shareToWhatsApp(cocktailName) {
+            const cocktail = cocktailsData.find(c => c.name === cocktailName);
+            const message = `🍸 ${cocktail.name}\n\nIngredients:\n${cocktail.ingredients.map(i => `• ${i}`).join('\n')}\n\nInstructions:\n${cocktail.instructions.map((inst, idx) => `${idx + 1}. ${inst}`).join('\n')}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Share to Email
+        function shareToEmail(cocktailName) {
+            const cocktail = cocktailsData.find(c => c.name === cocktailName);
+            const subject = `Recipe: ${cocktail.name}`;
+            const body = `${cocktail.name}\n\nIngredients:\n${cocktail.ingredients.map(i => `• ${i}`).join('\n')}\n\nInstructions:\n${cocktail.instructions.map((inst, idx) => `${idx + 1}. ${inst}`).join('\n')}`;
+            const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
+
